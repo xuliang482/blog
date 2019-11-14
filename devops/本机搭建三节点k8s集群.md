@@ -119,11 +119,20 @@ Pod4(10.244.2.11)   ----|
 virtualBox 安装比较简单，不再介绍，GUI 工具用起来也很方便，这部分只介绍我认为需要提示的部分。
 
 1. 内存推荐 2048M, CPU 推荐 2个
-1. 默认只有一个 NAT 适配器，添加一个 Host-Only Adapter。NAT 适配器是虚拟机用来访问互联网的，Host-Only 适配器是用来虚拟机之间通信的。
-1. 以 Normal Start 方式启动虚拟机安装完系统以后，因为是 server 版镜像，所以没有图形界面，直接使用用户名密码登录即可。
-1. 修改配置，`enp0s8` 使用静态 IP。配置请参考 [SSH between Mac OS X host and Virtual Box guest](https://gist.github.com/c-rainstorm/1bbd44b388acd35ca6eaf07d1fbd9bc7)。注意配置时将其中的网络接口名改成你自己的 Host-Only Adapter 对应的接口。
-1. 一台虚拟机创建完成以后可以使用 clone 方法复制出两台节点出来，注意 clone 时为新机器的网卡重新初始化 MAC 地址。
-1. 三台虚拟机的静态 IP 都配置好以后就可以使用 ssh 在本地主机的终端上操作三台虚机了。虚机使用 Headless Start 模式启动
+2. 默认只有一个 NAT 适配器，添加一个 Host-Only Adapter。NAT 适配器是虚拟机用来访问互联网的，Host-Only 适配器是用来虚拟机之间通信的。
+3. 以 Normal Start 方式启动虚拟机安装完系统以后，因为是 server 版镜像，所以没有图形界面，直接使用用户名密码登录即可。
+4. sudo ifconfig -a 查看当前网卡配置
+vim /etc/network/interfaces
+
+设置静态网卡ip地址
+修改配置，`enp0s8` 使用静态 IP。配置请参考 [SSH between Mac OS X host and Virtual Box guest](https://gist.github.com/c-rainstorm/1bbd44b388acd35ca6eaf07d1fbd9bc7)。
+auto enp0s8
+iface enp0s8 inet static
+address 192.168.56.100   #保持同一网段
+netmask 255.255.255.0
+注意配置时将其中的网络接口名改成你自己的 Host-Only Adapter 对应的接口。
+5. 一台虚拟机创建完成以后可以使用 clone 方法复制出两台节点出来，注意 clone 时为新机器的网卡重新初始化 MAC 地址。
+6. 三台虚拟机的静态 IP 都配置好以后就可以使用 ssh 在本地主机的终端上操作三台虚机了。虚机使用 Headless Start 模式启动
 
 ### 安装 Docker
 
@@ -133,10 +142,10 @@ virtualBox 安装比较简单，不再介绍，GUI 工具用起来也很方便�
 
 ```bash
 # apt search docker.io
-apt-get update
-apt-get install -y docker.io
-systemctl enable docker
-systemctl start docker
+sudo apt-get update
+sudo apt-get install -y docker.io
+sudo systemctl enable docker
+sudo systemctl start docker
 ```
 
 [official Docker installation guides](https://docs.docker.com/engine/installation/)
